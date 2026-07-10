@@ -55,8 +55,11 @@ app.use((err, _req, res, _next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`\n🚀 TripNest Server running on port ${PORT}`);
-  console.log(`📡 API: http://localhost:${PORT}/api`);
-  console.log(`🌿 Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 TripNest Server running on port ${PORT}`);
+    console.log(`📡 API: http://localhost:${PORT}/api`);
+    console.log(`🌿 Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
