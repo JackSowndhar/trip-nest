@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// Set base URL from environment variable if available (e.g. for production deployment)
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
+
 // Set auth header helper
 export const setAuthHeader = (token) => {
   if (token) {
