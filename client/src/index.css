@@ -78,3 +78,12 @@ input:focus, textarea:focus, select:focus {
 .animate-scale-up {
   animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* Decrease the stroke width of all icons for a more premium look */
+svg.lucide,
+svg.lucide *,
+svg[stroke="currentColor"],
+svg[stroke="currentColor"] * {
+  stroke-width: 1.5 !important;
+}
+

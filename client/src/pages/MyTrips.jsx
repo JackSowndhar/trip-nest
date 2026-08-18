@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { tripsAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { Calendar, Plane, CheckCircle2, Inbox, Search, MapPin, AlertTriangle, X, Lightbulb, Compass } from 'lucide-react';
+import TripIcon from '../components/TripIcon';
 
-const EMOJIS = ['✈️', '🌴', '🏔️', '🏖️', '🗼', '🏯', '🗽', '🏜️', '🌉', '🏙️', '🏕️', '🏟️', '🎡'];
+const COVER_ICONS = ['Plane', 'PalmTree', 'Mountain', 'Umbrella', 'Compass', 'Castle', 'Landmark', 'Sun', 'Route', 'Building2', 'Tent', 'Activity', 'Disc'];
 const GRADIENTS = [
   { label: 'Sunset Red', value: 'from-red-400 to-orange-500' },
   { label: 'Emerald Green', value: 'from-teal-400 to-emerald-500' },
@@ -33,7 +35,7 @@ const STATUS_META = {
     headerClass: 'bg-yellow-50 border-yellow-100',
     titleClass: 'text-yellow-700',
     dot: 'bg-yellow-400',
-    icon: '🗓️',
+    icon: Calendar,
   },
   active: {
     label: 'Active',
@@ -41,7 +43,7 @@ const STATUS_META = {
     headerClass: 'bg-blue-50 border-blue-100',
     titleClass: 'text-blue-700',
     dot: 'bg-blue-400',
-    icon: '✈️',
+    icon: Plane,
   },
   completed: {
     label: 'Completed',
@@ -49,7 +51,7 @@ const STATUS_META = {
     headerClass: 'bg-emerald-50 border-emerald-100',
     titleClass: 'text-emerald-700',
     dot: 'bg-emerald-400',
-    icon: '✅',
+    icon: CheckCircle2,
   },
 };
 
@@ -96,7 +98,7 @@ function KanbanColumn({ status, trips, onDrop, onCardClick, draggingId }) {
       >
         {trips.length === 0 && !isDragOver && (
           <div className="flex flex-col items-center justify-center h-32 text-gray-300 gap-1 select-none">
-            <span className="text-2xl">📭</span>
+            <Inbox className="w-8 h-8 text-gray-300" />
             <span className="text-xs">Drop trips here</span>
           </div>
         )}
@@ -135,17 +137,17 @@ function KanbanCard({ trip, onClick, isDragging }) {
 
       <div className="p-3 sm:p-4">
         <div className="flex items-start gap-3">
-          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br ${trip.gradient || 'from-primary-500 to-emerald-500'} flex items-center justify-center text-base sm:text-lg flex-shrink-0`}>
-            {trip.emoji || '✈️'}
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br ${trip.gradient || 'from-primary-500 to-emerald-500'} flex items-center justify-center text-white flex-shrink-0`}>
+            <TripIcon name={trip.emoji || 'Plane'} className="w-5 h-5" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-sm text-gray-800 truncate">{trip.name}</p>
-            <p className="text-xs text-gray-400 truncate">📍 {trip.destination}</p>
+            <p className="text-xs text-gray-400 truncate flex items-center gap-1 mt-0.5"><MapPin className="w-3.5 h-3.5 text-gray-400" /> {trip.destination}</p>
           </div>
         </div>
 
         <div className="mt-3 flex items-center justify-between text-[11px] text-gray-400">
-          <span>📅 {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+          <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-gray-400" /> {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
           <span>₹{trip.budget?.toLocaleString()}</span>
         </div>
 
@@ -165,9 +167,10 @@ function KanbanCard({ trip, onClick, isDragging }) {
 function StatusPill({ progress }) {
   const status = getStatus(progress);
   const meta = STATUS_META[status];
+  const Icon = meta.icon;
   return (
-    <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full ${meta.pillClass}`}>
-      <span>{meta.icon}</span> {meta.label}
+    <span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full ${meta.pillClass}`}>
+      <Icon className="w-3 h-3" /> {meta.label}
     </span>
   );
 }
@@ -189,7 +192,7 @@ export default function MyTrips() {
     startDate: '',
     endDate: '',
     budget: '',
-    emoji: '✈️',
+    emoji: 'Plane',
     gradient: 'from-teal-400 to-emerald-500',
   });
   const [modalError, setModalError] = useState('');
@@ -248,8 +251,8 @@ export default function MyTrips() {
     try {
       await tripsAPI.create({ ...formData, budget: Number(budget) || 0 });
       setIsModalOpen(false);
-      setFormData({ name: '', destination: '', startDate: '', endDate: '', budget: '', emoji: '✈️', gradient: 'from-teal-400 to-emerald-500' });
-      toast.success(`Trip "${name}" created successfully! 🗺️`);
+      setFormData({ name: '', destination: '', startDate: '', endDate: '', budget: '', emoji: 'Plane', gradient: 'from-teal-400 to-emerald-500' });
+      toast.success(`Trip "${name}" created successfully!`);
       fetchTrips();
     } catch (err) {
       console.error(err);
@@ -361,7 +364,9 @@ export default function MyTrips() {
           {/* Search + Status filter chips */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 sm:mb-8">
             <div className="relative w-full md:w-80">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 flex items-center">
+                <Search className="w-4 h-4" />
+              </span>
               <input
                 type="text"
                 placeholder="Search trips or destinations..."
@@ -374,30 +379,34 @@ export default function MyTrips() {
             {/* Status filter chips */}
             <div className="flex gap-2 flex-wrap overflow-x-auto">
               {[
-                { value: 'all', label: 'All' },
-                { value: 'planning', label: '🗓️ Planning' },
-                { value: 'active', label: '✈️ Active' },
-                { value: 'completed', label: '✅ Completed' },
-              ].map((chip) => (
-                <button
-                  key={chip.value}
-                  onClick={() => setStatusFilter(chip.value)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all whitespace-nowrap
-                    ${statusFilter === chip.value
-                      ? 'bg-primary-600 text-white border-primary-600'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
-                    }`}
-                >
-                  {chip.label}
-                </button>
-              ))}
+                { value: 'all', label: 'All', icon: null },
+                { value: 'planning', label: 'Planning', icon: Calendar },
+                { value: 'active', label: 'Active', icon: Plane },
+                { value: 'completed', label: 'Completed', icon: CheckCircle2 },
+              ].map((chip) => {
+                const ChipIcon = chip.icon;
+                return (
+                  <button
+                    key={chip.value}
+                    onClick={() => setStatusFilter(chip.value)}
+                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all whitespace-nowrap flex items-center gap-1.5
+                      ${statusFilter === chip.value
+                        ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
+                        : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                      }`}
+                  >
+                    {ChipIcon && <ChipIcon className="w-3.5 h-3.5" />}
+                    <span>{chip.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Trips Grid */}
           {filteredTrips.length === 0 ? (
-            <div className="text-center py-12 sm:py-16 bg-white border border-gray-100 rounded-3xl shadow-sm px-4">
-              <p className="text-4xl mb-3">🧭</p>
+            <div className="text-center py-12 sm:py-16 bg-white border border-gray-100 rounded-3xl shadow-sm px-4 flex flex-col items-center justify-center">
+              <Compass className="w-10 h-10 text-gray-300 mb-3" />
               <h3 className="font-display font-bold text-lg text-gray-800 mb-1">No trips found</h3>
               <p className="text-sm text-gray-400 max-w-sm mx-auto">
                 Try adjusting your filters, or start planning a brand new adventure today.
@@ -418,18 +427,18 @@ export default function MyTrips() {
                       <div className="absolute top-4 right-4">
                         <StatusPill progress={trip.progress} />
                       </div>
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-xl sm:text-2xl translate-y-5 sm:translate-y-6">
-                        {trip.emoji || '✈️'}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-primary-600 translate-y-5 sm:translate-y-6">
+                        <TripIcon name={trip.emoji || 'Plane'} className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                     </div>
 
                     <div className="p-4 sm:p-6 pt-6 sm:pt-8">
                       <h3 className="font-display font-bold text-lg sm:text-xl text-gray-800 line-clamp-1">{trip.name}</h3>
                       <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                        <span>📍</span> {trip.destination}
+                        <MapPin className="w-3.5 h-3.5 text-gray-400" /> {trip.destination}
                       </p>
-                      <p className="text-xs text-gray-500 mt-2 font-medium">
-                        📅 {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} – {new Date(trip.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      <p className="text-xs text-gray-500 mt-2 font-medium flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" /> {new Date(trip.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} – {new Date(trip.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </p>
 
                       <div className="mt-5">
@@ -464,7 +473,7 @@ export default function MyTrips() {
       {view === 'kanban' && (
   <div>
     <p className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
-      <span>💡</span> Drag a card to a different column to update its status.
+      <Lightbulb className="w-4 h-4 text-primary-500" /> Drag a card to a different column to update its status.
     </p>
     <div
       className="flex flex-col sm:flex-row gap-4 sm:gap-5 sm:overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0"
@@ -493,12 +502,12 @@ export default function MyTrips() {
             <div className="p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-display font-bold text-xl sm:text-2xl text-gray-800">Plan a New Adventure</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl font-bold p-1">✕</button>
+                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 flex items-center justify-center"><X className="w-5 h-5" /></button>
               </div>
 
               {modalError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs flex items-center gap-1">
-                  <span>⚠️</span> {modalError}
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" /> {modalError}
                 </div>
               )}
 
@@ -535,13 +544,13 @@ export default function MyTrips() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Choose Cover Emoji</label>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Choose Cover Icon</label>
                   <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-1.5 bg-gray-50 border border-gray-100 rounded-xl">
-                    {EMOJIS.map((emoji) => (
-                      <button key={emoji} type="button" onClick={() => setFormData((prev) => ({ ...prev, emoji }))}
-                        className={`w-9 h-9 text-lg rounded-lg flex items-center justify-center hover:bg-gray-150 transition-colors
-                          ${formData.emoji === emoji ? 'bg-primary-100 border border-primary-300' : 'bg-white border border-gray-200'}`}>
-                        {emoji}
+                    {COVER_ICONS.map((iconName) => (
+                      <button key={iconName} type="button" onClick={() => setFormData((prev) => ({ ...prev, emoji: iconName }))}
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-150 transition-colors
+                          ${formData.emoji === iconName ? 'bg-primary-100 border border-primary-300 text-primary-600' : 'bg-white border border-gray-200 text-gray-500'}`}>
+                        <TripIcon name={iconName} className="w-5 h-5" />
                       </button>
                     ))}
                   </div>

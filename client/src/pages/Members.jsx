@@ -4,6 +4,8 @@ import { membersAPI, tripsAPI, usersAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useImagePreview } from '../context/ImagePreviewContext';
+import { ArrowLeft, Users, ShieldAlert, Award, ChevronDown, CheckCircle2, AlertTriangle, UserMinus, MapPin } from 'lucide-react';
+import TripIcon from '../components/TripIcon';
 
 export default function Members() {
   const { tripId } = useParams();
@@ -77,7 +79,7 @@ export default function Members() {
       const response = await membersAPI.add(tripId, emailInput);
       setEmailInput('');
       setShowDropdown(false);
-      toast.success(response.message || 'Invitation sent successfully! ✈️');
+      toast.success(response.message || 'Invitation sent successfully!');
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || 'Failed to send invitation.';
@@ -111,7 +113,7 @@ export default function Members() {
   const handleMakeOwner = async (userId, userName) => {
     const confirmed = await toast.confirm(
       `Make ${userName} an owner of this trip?`,
-      'Make Owner 👑'
+      'Make Owner'
     );
     if (!confirmed) return;
 
@@ -120,7 +122,7 @@ export default function Members() {
         .map(id => id?._id?.toString() || id?.toString());
       const newOwners = [...new Set([...currentOwners, userId.toString()])];
       await tripsAPI.update(tripId, { owners: newOwners });
-      toast.success(`${userName} is now an owner! 👑`);
+      toast.success(`${userName} is now an owner!`);
       fetchData();
     } catch (err) {
       console.error(err);
@@ -139,7 +141,7 @@ export default function Members() {
   if (error || !trip) {
     return (
       <div className="p-4 sm:p-8 text-center max-w-md mx-auto min-h-[50vh] flex flex-col justify-center items-center">
-        <p className="text-4xl mb-3">⚠️</p>
+        <ShieldAlert className="w-12 h-12 text-red-500 mb-3 animate-bounce" />
         <h2 className="font-display font-bold text-xl text-gray-800 mb-2">Error</h2>
         <p className="text-sm text-gray-500 mb-6">{error || 'Could not load crew list.'}</p>
         <Link to="/trips" className="px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 transition-colors">
@@ -164,15 +166,18 @@ export default function Members() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
-      <Link to={`/trips/${tripId}`} className="text-sm text-gray-400 hover:text-primary-600 transition-colors mb-4 inline-flex items-center gap-1">
-        ← {trip?.name || 'Trip'}
+      <Link to={`/trips/${tripId}`} className="text-sm text-gray-400 hover:text-primary-600 transition-colors mb-4 inline-flex items-center gap-1.5 font-medium">
+        <ArrowLeft className="w-4 h-4" /> {trip?.name || 'Trip'}
       </Link>
       <div className="mb-6 sm:mb-8">
         <span className="text-xs font-bold text-primary-600 uppercase tracking-widest">Crew Manager</span>
-        <h1 className="font-display font-bold text-2xl sm:text-3xl text-gray-900 mt-1">
-          {trip.emoji} {trip.name} Crew
+        <h1 className="font-display font-bold text-2xl sm:text-3xl text-gray-900 mt-1 flex items-center gap-2">
+          <TripIcon name={trip.emoji || 'Plane'} className="w-7 h-7 text-primary-600" />
+          <span>{trip.name} Crew</span>
         </h1>
-        <p className="text-gray-500 text-sm mt-1">📍 {trip.destination} · Manage travel partners and splitting privileges.</p>
+        <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5 flex-wrap">
+          <MapPin className="w-3.5 h-3.5 text-gray-400" /> {trip.destination} · Manage travel partners and splitting privileges.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
@@ -214,17 +219,17 @@ export default function Members() {
                       <>
                         <button
                           onClick={() => handleMakeOwner(u._id, u.name)}
-                          className="text-primary-500 hover:text-primary-700 hover:bg-primary-50 p-1.5 rounded-lg text-xs transition-colors whitespace-nowrap"
+                          className="text-primary-500 hover:text-primary-700 hover:bg-primary-50 p-1.5 rounded-lg text-xs transition-colors whitespace-nowrap flex items-center gap-1"
                           title="Make Owner"
                         >
-                          👑 Make Owner
+                          <Award className="w-3.5 h-3.5 text-amber-500" /> Make Owner
                         </button>
                         <button
                           onClick={() => handleRemoveMember(u._id)}
-                          className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg text-xs transition-colors whitespace-nowrap"
+                          className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg text-xs transition-colors whitespace-nowrap flex items-center gap-1"
                           title="Remove Member"
                         >
-                          🗑️ Remove
+                          <UserMinus className="w-3.5 h-3.5" /> Remove
                         </button>
                       </>
                     )}
@@ -260,9 +265,7 @@ export default function Members() {
                     className="flex-shrink-0 w-10 h-[42px] flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:bg-gray-50 hover:text-primary-600 transition-colors"
                     title="Select from crew"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <ChevronDown className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -307,8 +310,8 @@ export default function Members() {
               </div>
 
               {addMessage.text && (
-                <p className={`text-xs ${addMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
-                  {addMessage.type === 'success' ? '✅' : '⚠️'} {addMessage.text}
+                <p className={`text-xs flex items-center gap-1.5 ${addMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                  {addMessage.type === 'success' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />} {addMessage.text}
                 </p>
               )}
 
@@ -322,8 +325,9 @@ export default function Members() {
               </button>
             </form>
           ) : (
-            <div className="p-3.5 bg-gray-50 border border-gray-150 rounded-xl text-xs text-gray-500 leading-relaxed">
-              🔒 Only the trip owner (<strong>{members.find((m) => m.user?._id === trip.owner)?.user?.name || 'Creator'}</strong>) can add or remove crew members.
+            <div className="p-3.5 bg-gray-50 border border-gray-150 rounded-xl text-xs text-gray-500 leading-relaxed flex items-start gap-1.5">
+              <ShieldAlert className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+              <span>Only the trip owner (<strong>{members.find((m) => m.user?._id === trip.owner)?.user?.name || 'Creator'}</strong>) can add or remove crew members.</span>
             </div>
           )}
         </div>

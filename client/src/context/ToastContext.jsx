@@ -1,31 +1,32 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { Sparkles, AlertTriangle, Bell, Info, X } from 'lucide-react';
 
 const ToastContext = createContext(null);
 
 const TOAST_TYPES = {
   success: {
     bg: 'bg-white/90 border-l-4 border-l-emerald-500 text-gray-800',
-    icon: '🎉',
+    icon: Sparkles,
     iconBg: 'bg-emerald-50 text-emerald-600',
   },
   error: {
     bg: 'bg-white/90 border-l-4 border-l-red-500 text-gray-800',
-    icon: '⚠️',
+    icon: AlertTriangle,
     iconBg: 'bg-red-50 text-red-600',
   },
   warning: {
     bg: 'bg-white/90 border-l-4 border-l-amber-500 text-gray-800',
-    icon: '🔔',
+    icon: Bell,
     iconBg: 'bg-amber-50 text-amber-600',
   },
   info: {
     bg: 'bg-white/90 border-l-4 border-l-blue-500 text-gray-800',
-    icon: 'ℹ️',
+    icon: Info,
     iconBg: 'bg-blue-50 text-blue-600',
   },
   confirm: {
     bg: 'bg-white/90 border-l-4 border-l-amber-500 text-gray-800',
-    icon: '🔔',
+    icon: Bell,
     iconBg: 'bg-amber-50 text-amber-600',
   },
 };
@@ -85,17 +86,17 @@ export const ToastProvider = ({ children }) => {
 >
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-3">
-      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-semibold flex-shrink-0 ${typeMeta.iconBg}`}>
-        {typeMeta.icon}
+      <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${typeMeta.iconBg}`}>
+        {React.createElement(typeMeta.icon, { className: "w-4 h-4" })}
       </div>
       <p className="text-xs font-semibold">{t.message}</p>
     </div>
     {t.type !== 'confirm' && (
       <button
         onClick={() => removeToast(t.id)}
-        className="text-gray-400 hover:text-gray-600 text-sm font-bold pl-3 flex-shrink-0"
+        className="text-gray-400 hover:text-gray-600 pl-3 flex-shrink-0 flex items-center"
       >
-        ✕
+        <X className="w-4 h-4" />
       </button>
     )}
   </div>

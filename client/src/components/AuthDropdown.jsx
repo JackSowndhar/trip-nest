@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import { User, Mail, Lock, Eye, EyeOff, AlertTriangle, Check, Rocket, Plane, Smile } from 'lucide-react';
 
 const validate = {
   name: (v) => {
@@ -32,7 +33,7 @@ const InputField = ({ label, type = 'text', value, onChange, onBlur, error, touc
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
     <div className="relative">
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base">{icon}</span>
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base flex items-center justify-center">{icon}</span>
       <input
         type={type}
         value={value}
@@ -48,12 +49,14 @@ const InputField = ({ label, type = 'text', value, onChange, onBlur, error, touc
           }`}
       />
       {touched && !error && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+          <Check className="w-4 h-4" />
+        </span>
       )}
     </div>
     {touched && error && (
       <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-        <span>⚠</span> {error}
+        <AlertTriangle className="w-3 h-3 flex-shrink-0" /> {error}
       </p>
     )}
   </div>
@@ -181,80 +184,86 @@ return (
           ))}
         </div>
 
-        <h2 className="font-display text-xl font-bold text-gray-800 mb-1">
-          {mode === 'login' ? 'Welcome back! 👋' : 'Create your account ✈️'}
+        <h2 className="font-display text-xl font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+          {mode === 'login' ? (
+            <>Welcome back! <Smile className="w-5 h-5 text-amber-500" /></>
+          ) : (
+            <>Create your account <Plane className="w-5 h-5 text-primary-500" /></>
+          )}
         </h2>
         <p className="text-xs text-gray-500 mb-4">
           {mode === 'login'
             ? 'Sign in to access your trip plans'
             : 'Start organizing your adventures today'}
         </p>
-
+        
         {/* Error Banner */}
         {(submitError || authError) && (
           <div className="mb-4 px-3 py-2.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
-            <span>⚠️</span>
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
             <span>{submitError || authError}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-          {mode === 'register' && (
-            <InputField
-              label="Full Name"
-              value={fields.name}
-              onChange={handleChange('name')}
-              onBlur={handleBlur('name')}
-              error={errors.name}
-              touched={touched.name}
-              placeholder="Jane Smith"
-              icon="👤"
-            />
-          )}
-
-          <InputField
-            label="Email Address"
-            type="email"
-            value={fields.email}
-            onChange={handleChange('email')}
-            onBlur={handleBlur('email')}
-            error={errors.email}
-            touched={touched.email}
-            placeholder="you@example.com"
-            icon="✉️"
-          />
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base">🔒</span>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={fields.password}
-                onChange={handleChange('password')}
-                onBlur={handleBlur('password')}
-                placeholder="Min 8 chars, 1 uppercase, 1 number"
-                className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm transition-all duration-200
-                  ${touched.password && errors.password
-                    ? 'border-red-400 bg-red-50 focus:ring-2 focus:ring-red-200'
-                    : touched.password && !errors.password
-                      ? 'border-green-400 bg-green-50 focus:ring-2 focus:ring-green-200'
-                      : 'border-gray-200 bg-gray-50 focus:ring-2 focus:ring-primary-200 focus:border-primary-500'
-                  }`}
+                   {mode === 'register' && (
+              <InputField
+                label="Full Name"
+                value={fields.name}
+                onChange={handleChange('name')}
+                onBlur={handleBlur('name')}
+                error={errors.name}
+                touched={touched.name}
+                placeholder="Jane Smith"
+                icon={<User className="w-4 h-4" />}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </button>
-            </div>
-            {touched.password && errors.password && (
-              <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                <span>⚠</span> {errors.password}
-              </p>
             )}
+
+            <InputField
+              label="Email Address"
+              type="email"
+              value={fields.email}
+              onChange={handleChange('email')}
+              onBlur={handleBlur('email')}
+              error={errors.email}
+              touched={touched.email}
+              placeholder="you@example.com"
+              icon={<Mail className="w-4 h-4" />}
+            />
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base flex items-center justify-center">
+                  <Lock className="w-4 h-4" />
+                </span>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={fields.password}
+                  onChange={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  placeholder="Min 8 chars, 1 uppercase, 1 number"
+                  className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm transition-all duration-200
+                    ${touched.password && errors.password
+                      ? 'border-red-400 bg-red-50 focus:ring-2 focus:ring-red-200'
+                      : touched.password && !errors.password
+                        ? 'border-green-400 bg-green-50 focus:ring-2 focus:ring-green-200'
+                        : 'border-gray-200 bg-gray-50 focus:ring-2 focus:ring-primary-200 focus:border-primary-500'
+                    }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm flex items-center"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {touched.password && errors.password && (
+                <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 flex-shrink-0" /> {errors.password}
+                </p>
+              )}
 
             {/* Password strength indicator (register only) */}
             {mode === 'register' && fields.password && (
@@ -305,7 +314,7 @@ return (
               error={errors.confirmPassword}
               touched={touched.confirmPassword}
               placeholder="Re-enter your password"
-              icon="🔐"
+              icon={<Lock className="w-4 h-4" />}
             />
           )}
 
@@ -331,7 +340,15 @@ return (
               </>
             ) : (
               <>
-                {mode === 'login' ? '🚀 Sign In' : '✈️ Start Your Journey'}
+                {mode === 'login' ? (
+                  <>
+                    <Rocket className="w-4 h-4" /> Sign In
+                  </>
+                ) : (
+                  <>
+                    <Plane className="w-4 h-4" /> Start Your Journey
+                  </>
+                )}
               </>
             )}
           </button>

@@ -5,6 +5,8 @@ import { chatAPI, tripsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useImagePreview } from '../context/ImagePreviewContext';
+import { ArrowLeft, MessageSquare, MapPin, Users, Send, Paperclip, Image, FileText, Reply, Pencil, Trash2, X } from 'lucide-react';
+import TripIcon from '../components/TripIcon';
 
 export default function Chat() {
   const { tripId } = useParams();
@@ -270,21 +272,24 @@ export default function Chat() {
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:text-primary-600 hover:bg-primary-50 transition-colors"
             title="Back to Overview"
           >
-            ←
+            <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="min-w-0">
-            <h1 className="font-display font-bold text-base sm:text-lg text-gray-900 truncate mt-0.5">
-              {trip?.emoji} {trip?.name} Discussion
+            <h1 className="font-display font-bold text-base sm:text-lg text-gray-900 mt-0.5 flex items-center gap-2">
+              <TripIcon name={trip?.emoji || 'Plane'} className="w-5 h-5 text-primary-600" />
+              <span>{trip?.name} Discussion</span>
             </h1>
-            <p className="text-xs text-gray-400 truncate pt-2">📍 {trip?.destination}</p>
+            <p className="text-xs text-gray-400 truncate pt-2 flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-gray-400" /> {trip?.destination}
+            </p>
           </div>
         </div>
 
         <Link
           to={`/trips/${tripId}/members`}
-          className="text-xs text-primary-600 font-semibold hover:underline bg-primary-50 px-3 py-2 rounded-xl flex-shrink-0"
+          className="text-xs text-primary-600 font-semibold hover:underline bg-primary-50 px-3 py-2 rounded-xl flex-shrink-0 flex items-center gap-1"
         >
-          👥 View Crew
+          <Users className="w-3.5 h-3.5" /> View Crew
         </Link>
       </div>
 
@@ -293,7 +298,7 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-8 max-w-md mx-auto">
-              <span className="text-4xl mb-4">💬</span>
+              <MessageSquare className="w-12 h-12 text-gray-305 mb-4" />
               <h3 className="font-display font-bold text-gray-800 text-lg">No Messages Yet</h3>
               <p className="text-sm text-gray-400 mt-1 leading-relaxed">
                 Break the ice! Start chatting with your travel crew about itinerary plans, hotel stays, or budget breakdowns.
@@ -376,32 +381,26 @@ export default function Chat() {
                         <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity duration-200">
                           <button
                             onClick={() => setReplyToMessage(msg)}
-                            className="p-1 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-gray-50 transition-colors"
+                            className="p-1 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-gray-50 transition-colors flex items-center justify-center"
                             title="Reply to message"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                            </svg>
+                            <Reply className="w-3.5 h-3.5" />
                           </button>
                           {isMe && (
                             <>
                               <button
                                 onClick={() => handleStartEdit(msg)}
-                                className="p-1 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-gray-50 transition-colors"
+                                className="p-1 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-gray-50 transition-colors flex items-center justify-center"
                                 title="Edit message"
                               >
-                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
+                                <Pencil className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleDeleteMessage(msg._id)}
-                                className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-gray-50 transition-colors"
+                                className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-gray-50 transition-colors flex items-center justify-center"
                                 title="Delete message"
                               >
-                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </>
                           )}
@@ -414,13 +413,13 @@ export default function Chat() {
                           }`}
                         >
                           {msg.replyTo && (
-                            <div className={`px-2 py-1 rounded-lg border-l-4 text-xs select-none mb-1 text-left ${
+                            <div className={`px-2 py-1 rounded-lg border-l-4 text-xs select-none mb-1 text-left flex flex-col items-start ${
                               isMe 
                                 ? 'bg-black/10 border-white/40 text-emerald-105' 
                                 : 'bg-black/5 border-primary-500 text-gray-500'
                             }`}>
-                              <span className="font-semibold block text-[10px] mb-0.5">
-                                ⤺ {msg.replyTo.senderName}
+                              <span className="font-semibold block text-[10px] mb-0.5 flex items-center gap-1">
+                                <Reply className="w-3 h-3 text-primary-500" /> {msg.replyTo.senderName}
                               </span>
                               <span className="line-clamp-2 italic">{msg.replyTo.text}</span>
                             </div>
@@ -444,10 +443,10 @@ export default function Chat() {
                                   : 'bg-white border-gray-200 text-gray-800 hover:bg-gray-50'
                               }`}
                             >
-                              <span className="text-2xl">📄</span>
+                              <FileText className="w-6 h-6 text-gray-400 flex-shrink-0" />
                               <div className="flex flex-col min-w-0">
                                 <span className="font-medium truncate text-xs">{msg.file.name}</span>
-                                <span className="text-[10px] text-gray-450">Click to download</span>
+                                <span className="text-[10px] text-gray-400">Click to download</span>
                               </div>
                             </a>
                           )}
@@ -488,10 +487,10 @@ export default function Chat() {
               <button
                 type="button"
                 onClick={() => setReplyToMessage(null)}
-                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors font-semibold"
+                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
                 title="Cancel reply"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -504,7 +503,7 @@ export default function Chat() {
                     <img src={selectedFile.url} alt="Staged upload" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <span className="text-2xl flex-shrink-0">📄</span>
+                  <FileText className="w-6 h-6 text-gray-400 flex-shrink-0" />
                 )}
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-semibold text-gray-700 truncate">
@@ -516,10 +515,10 @@ export default function Chat() {
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors font-semibold"
+                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
                 title="Remove file"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -552,7 +551,7 @@ export default function Chat() {
                     }}
                     className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors text-left"
                   >
-                    <span>🖼️</span> Photos
+                    <Image className="w-4 h-4 text-gray-500" /> Photos
                   </button>
                   <button
                     type="button"
@@ -562,17 +561,17 @@ export default function Chat() {
                     }}
                     className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors text-left"
                   >
-                    <span>📄</span> Documents
+                    <FileText className="w-4 h-4 text-gray-500" /> Documents
                   </button>
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
-                className="absolute left-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 flex items-center justify-center font-bold text-lg transition-colors z-10"
+                className="absolute left-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 flex items-center justify-center transition-colors z-10"
                 title="Add attachment"
               >
-                +
+                <Paperclip className="w-4 h-4" />
               </button>
               <input
                 type="text"
@@ -589,9 +588,7 @@ export default function Chat() {
               className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-primary-600 to-emerald-500 text-white rounded-2xl shadow-md shadow-primary-500/10 hover:from-primary-700 hover:to-emerald-600 flex items-center justify-center transition-all disabled:opacity-50 disabled:shadow-none"
               title="Send message"
             >
-              <svg className="w-5 h-5 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
+              <Send className="w-5 h-5" />
             </button>
           </form>
         </div>

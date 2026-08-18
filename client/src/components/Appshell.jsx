@@ -2,18 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { Home, Map, ClipboardList, Calendar, Banknote, Users, MessageSquare, Plane, LogOut } from 'lucide-react';
 
 const NAV = [
-  { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-  { icon: '🗺️', label: 'My Trips', path: '/trips' },
+  { icon: Home, label: 'Dashboard', path: '/dashboard' },
+  { icon: Map, label: 'My Trips', path: '/trips' },
 ];
 
 const TRIP_NAV = (tripId) => [
-  { icon: '📋', label: 'Overview', path: `/trips/${tripId}` },
-  { icon: '📅', label: 'Itinerary', path: `/trips/${tripId}/itinerary` },
-  { icon: '💸', label: 'Budget', path: `/trips/${tripId}/budget` },
-  { icon: '👥', label: 'Members', path: `/trips/${tripId}/members` },
-  { icon: '💬', label: 'Chat', path: `/trips/${tripId}/chat`}
+  { icon: ClipboardList, label: 'Overview', path: `/trips/${tripId}` },
+  { icon: Calendar, label: 'Itinerary', path: `/trips/${tripId}/itinerary` },
+  { icon: Banknote, label: 'Budget', path: `/trips/${tripId}/budget` },
+  { icon: Users, label: 'Members', path: `/trips/${tripId}/members` },
+  { icon: MessageSquare, label: 'Chat', path: `/trips/${tripId}/chat`}
 ];
 
 export default function AppShell({ children }) {
@@ -86,8 +87,8 @@ export default function AppShell({ children }) {
         <div className="p-4 border-b border-gray-100 flex items-center justify-between">
           {!isCollapsed && (
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                <span className="text-white text-lg">✈</span>
+              <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0 text-white">
+                <Plane className="w-5 h-5" />
               </div>
               <span className="font-display font-bold text-xl text-gray-800">
                 Trip<span className="text-primary-600">Nest</span>
@@ -95,8 +96,8 @@ export default function AppShell({ children }) {
             </Link>
           )}
           {isCollapsed && (
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md mx-auto">
-              <span className="text-white text-lg">✈</span>
+            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md mx-auto text-white">
+              <Plane className="w-5 h-5" />
             </div>
           )}
           {/* Desktop collapse button */}
@@ -127,7 +128,7 @@ export default function AppShell({ children }) {
             </button>
           )}
 
-          {NAV.map(({ icon, label, path }) => (
+          {NAV.map(({ icon: Icon, label, path }) => (
             <Link
               key={path}
               to={path}
@@ -138,7 +139,7 @@ export default function AppShell({ children }) {
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
                 } ${isCollapsed ? 'justify-center' : ''}`}
             >
-              <span className="text-base flex-shrink-0">{icon}</span>
+              <Icon className="w-5 h-5 flex-shrink-0" />
               {!isCollapsed && label}
             </Link>
           ))}
@@ -147,7 +148,7 @@ export default function AppShell({ children }) {
           {tripId && !isCollapsed && (
             <div className="mt-4">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">This Trip</p>
-              {TRIP_NAV(tripId).map(({ icon, label, path }) => (
+              {TRIP_NAV(tripId).map(({ icon: Icon, label, path }) => (
                 <Link
                   key={path}
                   to={path}
@@ -157,7 +158,7 @@ export default function AppShell({ children }) {
                       : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
                     }`}
                 >
-                  <span className="text-base">{icon}</span>
+                  <Icon className="w-5 h-5 flex-shrink-0" />
                   {label}
                 </Link>
               ))}
@@ -166,10 +167,10 @@ export default function AppShell({ children }) {
 
           {tripId && isCollapsed && (
             <div className="mt-2 space-y-1">
-              {TRIP_NAV(tripId).map(({ icon, label, path }) => (
+              {TRIP_NAV(tripId).map(({ icon: Icon, label, path }) => (
                 <Link key={path} to={path} title={label}
                   className={`flex justify-center p-2.5 rounded-xl transition-all ${isActive(path) ? 'bg-primary-50 text-primary-600' : 'text-gray-400 hover:bg-gray-50'}`}>
-                  <span className="text-base">{icon}</span>
+                  <Icon className="w-5 h-5 flex-shrink-0" />
                 </Link>
               ))}
             </div>
@@ -263,9 +264,9 @@ export default function AppShell({ children }) {
               <button
                 onClick={() => setShowConfirm(true)}
                 title="Sign Out"
-                className="w-8 h-8 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg transition-colors text-xs"
+                className="w-8 h-8 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg transition-colors"
               >
-                ↩
+                <LogOut className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -297,8 +298,8 @@ export default function AppShell({ children }) {
           </svg>
         </button>
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
-            <span className="text-white text-sm">✈</span>
+          <div className="w-7 h-7 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0 text-white">
+            <Plane className="w-4 h-4" />
           </div>
           <span className="font-display font-bold text-base text-gray-800">
             Trip<span className="text-primary-600">Nest</span>

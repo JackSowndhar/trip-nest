@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { X } from 'lucide-react';
 
 const ImagePreviewContext = createContext(null);
 
@@ -29,9 +30,9 @@ export const ImagePreviewProvider = ({ children }) => {
             {/* Close button */}
             <button 
               onClick={closePreview}
-              className="absolute top-4 right-4 text-white bg-black/40 hover:bg-black/60 rounded-full w-8 h-8 flex items-center justify-center font-bold transition-all z-10 hover:scale-105"
+              className="absolute top-4 right-4 text-white bg-black/40 hover:bg-black/60 rounded-full w-8 h-8 flex items-center justify-center transition-all z-10 hover:scale-105"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
             <div className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 overflow-hidden flex items-center justify-center bg-black/20 rounded-2xl">
               <img 

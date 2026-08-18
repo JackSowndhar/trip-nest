@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { tripsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { Calendar, Coins, Users, MessageSquare, MapPin, AlertTriangle, Frown, ArrowLeft, Trash2 } from 'lucide-react';
+import TripIcon from '../components/TripIcon';
 
 export default function TripOverview() {
   const { tripId } = useParams();
@@ -33,10 +35,12 @@ export default function TripOverview() {
   );
 
   if (!trip) return (
-    <div className="p-8 text-center">
-      <p className="text-4xl mb-3">😕</p>
+    <div className="p-8 text-center flex flex-col items-center justify-center">
+      <Frown className="w-10 h-10 text-gray-400 mb-3" />
       <p className="text-gray-500">Trip not found</p>
-      <Link to="/trips" className="mt-4 inline-block text-primary-600 text-sm font-medium">← Back to trips</Link>
+      <Link to="/trips" className="mt-4 inline-flex items-center gap-1 text-primary-600 text-sm font-medium hover:underline">
+        <ArrowLeft className="w-4 h-4" /> Back to trips
+      </Link>
     </div>
   );
 
@@ -48,16 +52,16 @@ export default function TripOverview() {
   const durationDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
 
   const quickLinks = [
-    { label: 'Itinerary', icon: '📅', desc: 'Day-by-day plan', to: `/trips/${tripId}/itinerary`, color: 'from-blue-400 to-indigo-500' },
-    { label: 'Budget', icon: '💸', desc: `₹${(trip.totalSpent || 0).toLocaleString()} spent`, to: `/trips/${tripId}/budget`, color: 'from-amber-400 to-orange-500' },
-    { label: 'Members', icon: '👥', desc: `${trip.memberCount || 0} people`, to: `/trips/${tripId}/members`, color: 'from-purple-400 to-pink-500' },
-    {label: 'Chat', icon: '💬', desc: 'Discuss trip plans', to: `/trips/${tripId}/chat`, color: 'from-green-400 to-teal-500'}
+    { label: 'Itinerary', icon: Calendar, desc: 'Day-by-day plan', to: `/trips/${tripId}/itinerary`, color: 'from-blue-400 to-indigo-500' },
+    { label: 'Budget', icon: Coins, desc: `₹${(trip.totalSpent || 0).toLocaleString()} spent`, to: `/trips/${tripId}/budget`, color: 'from-amber-400 to-orange-500' },
+    { label: 'Members', icon: Users, desc: `${trip.memberCount || 0} people`, to: `/trips/${tripId}/members`, color: 'from-purple-400 to-pink-500' },
+    { label: 'Chat', icon: MessageSquare, desc: 'Discuss trip plans', to: `/trips/${tripId}/chat`, color: 'from-green-400 to-teal-500' }
   ];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <Link to="/trips" className="text-sm text-gray-400 hover:text-primary-600 transition-colors mb-4 inline-flex items-center gap-1">
-        ← All Trips
+      <Link to="/trips" className="text-sm text-gray-400 hover:text-primary-600 transition-colors mb-4 inline-flex items-center gap-1.5 font-medium">
+        <ArrowLeft className="w-4 h-4" /> All Trips
       </Link>
 
       {/* Trip Hero */}
@@ -66,9 +70,11 @@ export default function TripOverview() {
           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px' }} />
         <div className="relative z-10 flex flex-col sm:flex-row items-start justify-between gap-4">
           <div>
-            <span className="text-4xl sm:text-5xl mb-3 block">{trip.emoji}</span>
+            <div className="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-primary-600 mb-3">
+              <TripIcon name={trip.emoji || 'Plane'} className="w-6 h-6" />
+            </div>
             <h1 className="font-display font-bold text-2xl sm:text-3xl text-white mb-1">{trip.name}</h1>
-            <p className="text-white/80 text-base sm:text-lg">📍 {trip.destination}</p>
+            <p className="text-white/80 text-base sm:text-lg flex items-center gap-1.5"><MapPin className="w-4 h-4 text-white/80" /> {trip.destination}</p>
             {trip.description && <p className="text-white/70 text-sm mt-2 max-w-md">{trip.description}</p>}
           </div>
           <div className="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
@@ -93,9 +99,7 @@ export default function TripOverview() {
                   bg-white/15 border border-white/30 text-white
                   hover:bg-red-300/15 hover:border-red-400/20 transition-all duration-200"
               >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <Trash2 className="w-3.5 h-3.5" />
                 Delete trip
               </button>
             )}
@@ -105,22 +109,27 @@ export default function TripOverview() {
 
       {/* Quick Links */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-        {quickLinks.map(ql => (
-          <Link key={ql.label} to={ql.to}
-            className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg transition-all hover:-translate-y-0.5 group">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${ql.color} flex items-center justify-center text-xl mb-3 shadow-md group-hover:scale-110 transition-transform`}>
-              {ql.icon}
-            </div>
-            <p className="font-semibold text-gray-800 text-sm">{ql.label}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{ql.desc}</p>
-          </Link>
-        ))}
+        {quickLinks.map(ql => {
+          const LinkIcon = ql.icon;
+          return (
+            <Link key={ql.label} to={ql.to}
+              className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg transition-all hover:-translate-y-0.5 group">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${ql.color} flex items-center justify-center text-white mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                <LinkIcon className="w-5 h-5" />
+              </div>
+              <p className="font-semibold text-gray-800 text-sm">{ql.label}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{ql.desc}</p>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Info grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <h3 className="font-semibold text-gray-700 text-sm mb-3">📆 Trip Dates</h3>
+          <h3 className="font-semibold text-gray-700 text-sm mb-3 flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-gray-500" /> Trip Dates
+          </h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Start</span>
@@ -137,7 +146,9 @@ export default function TripOverview() {
           </div>
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <h3 className="font-semibold text-gray-700 text-sm mb-3">💰 Spending Summary</h3>
+          <h3 className="font-semibold text-gray-700 text-sm mb-3 flex items-center gap-1.5">
+            <Coins className="w-4 h-4 text-gray-500" /> Spending Summary
+          </h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Total Spent</span>
@@ -167,17 +178,15 @@ export default function TripOverview() {
         >
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 animate-fade-in">
             <div className="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
+              <Trash2 className="w-5 h-5 text-red-500" />
             </div>
 
             <h2 className="text-base font-semibold text-gray-900 mb-1">Delete this trip?</h2>
             <p className="text-sm text-gray-500 mb-3 leading-relaxed">
               <span className="font-medium text-gray-700">{trip.name}</span> and all its data — itinerary, budget, and members — will be permanently removed.
             </p>
-            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-5">
-              ⚠️ This can't be undone.
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-5 flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" /> This can't be undone.
             </p>
 
             <div className="flex gap-2">
@@ -200,9 +209,7 @@ export default function TripOverview() {
                   </>
                 ) : (
                   <>
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 className="w-3.5 h-3.5" />
                     Delete trip
                   </>
                 )}

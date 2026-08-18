@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Plane } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useImagePreview } from '../context/ImagePreviewContext';
@@ -38,8 +39,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-primary-500/30 group-hover:scale-105 transition-transform">
-            <span className="text-white text-lg">✈</span>
+          <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-primary-500/30 group-hover:scale-105 transition-transform text-white">
+            <Plane className="w-5 h-5" />
           </div>
           <span className="font-display font-bold text-xl text-gray-800">
             Trip<span className="text-primary-600">Nest</span>
