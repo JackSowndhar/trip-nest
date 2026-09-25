@@ -424,6 +424,7 @@ export default function Chat() {
                               <span className="line-clamp-2 italic">{msg.replyTo.text}</span>
                             </div>
                           )}
+                          
                           {/* File / Document Attachment */}
                           {msg.file && msg.file.fileType === 'image' && (
                             <div 

@@ -340,7 +340,7 @@ export default function MyTrips() {
       <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 w-full sm:w-fit mb-6 overflow-x-auto">
         {[
           { value: 'all', label: '☰  All Trips' },
-          { value: 'kanban', label: '⊞  Kanban' },
+          { value: 'trip board', label: '⊞  Trip Board' },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -470,7 +470,7 @@ export default function MyTrips() {
       {/* ════════════════════════════════════════════
           KANBAN VIEW
       ════════════════════════════════════════════ */}
-      {view === 'kanban' && (
+      {view === 'trip board' && (
   <div>
     <p className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
       <Lightbulb className="w-4 h-4 text-primary-500" /> Drag a card to a different column to update its status.

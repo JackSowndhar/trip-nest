@@ -47,7 +47,7 @@ input:focus, textarea:focus, select:focus {
   }
   to {
     transform: translateX(0);
-    opacity: 1;
+    opacity: 1;  
   }
 }
 
